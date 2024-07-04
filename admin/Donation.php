@@ -41,7 +41,7 @@
   <div class="row-fluid"> 
      <div class="empty">
 	     <div class="pull-right">
-		   <a href="print_giving.php" class="btn btn-info" id="print" data-placement="left" title="Click to Print"><i class="icon-print icon-large"></i> Print List</a> 		      
+		   <a href="print_tithe.php" class="btn btn-info" id="print" data-placement="left" title="Click to Print"><i class="icon-print icon-large"></i> Print List</a> 		      
 		   <script type="text/javascript">
 		     $(document).ready(function(){
 		     $('#print').tooltip('show');
@@ -74,9 +74,9 @@
 <tbody>
 <!-----------------------------------Content------------------------------------>
 <?php
-		$student_query = mysqli_query($conn,"SELECT *FROm members  LEFT OUTER JOIN giving ON members.id = giving.na WHERE giving.givingid !='' ")or die(mysqli_error());
+		$student_query = mysqli_query($conn,"SELECT *FROm members  LEFT OUTER JOIN tithe ON members.id = tithe.na WHERE tithe.titheid !='' ")or die(mysqli_error());
 		while($row = mysqli_fetch_array($student_query)){
-		$username = $row['givingid'];
+		$username = $row['titheid'];
 	
 		?>
 									
@@ -87,7 +87,7 @@
 			
 			<td><?php echo $row['Amount']; ?></td>
 		
-			<td><?php echo $row['ya']; ?></td>
+			<td><?php echo $row['na']; ?></td>
 			<td><?php echo $row['paytime']; ?></td>
             </tr>
 											

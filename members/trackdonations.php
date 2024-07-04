@@ -6,7 +6,7 @@
             <div class="row-fluid">
 				<?php include('sidebar.php'); ?>
 				<div class="span3" id="adduser">
-				<?php include('add_donation.php'); ?>		   			
+		   			
 				</div>
                 <div class="span6" id="">
                      <div class="row-fluid">
@@ -25,9 +25,9 @@
                  ?>	 
                         <div id="block_bg" class="block">
                             <div class="navbar navbar-inner block-header">
-                                <div class="muted pull-left"></i><i class="icon-user"></i> Giving List</div>
+                                <div class="muted pull-left"></i><i class="icon-user"></i> Donations List</div>
 								<div class="muted pull-right">
-								Number of Givings: <span class="badge badge-info"><?php  echo $count; ?></span>
+								Number of Donations: <span class="badge badge-info"><?php  echo $count; ?></span>
 							 </div>
                             </div>
                             <div class="block-content collapse in">

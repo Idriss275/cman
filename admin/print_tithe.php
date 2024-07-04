@@ -302,12 +302,12 @@ normal'><span style='font-size:12.0pt;mso-bidi-font-size:11.0pt;font-family:
   <td width=376 valign=top style='width:281.85pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=msoNormal align=center style='margin-bottom:0in;margin-bottom:.0001pt;
   text-align:center;line-height:normal'><span style='font-size:12.0pt;
-  mso-bidi-font-size:11.0pt;font-family:"Times New Roman","serif"'>Associate Pastor<o:p></o:p></span></p>
+  mso-bidi-font-size:11.0pt;font-family:"Times New Roman","serif"'>Associate Admin<o:p></o:p></span></p>
   </td>
   <td width=376 valign=top style='width:281.85pt;padding:0in 5.4pt 0in 5.4pt'>
   <p class=msoNormal align=center style='margin-bottom:0in;margin-bottom:.0001pt;
   text-align:center;line-height:normal'><span style='font-size:12.0pt;
-  mso-bidi-font-size:11.0pt;font-family:"Times New Roman","serif"'>Senior Pastor<o:p></o:p></span></p>
+  mso-bidi-font-size:11.0pt;font-family:"Times New Roman","serif"'>Senior Admin<o:p></o:p></span></p>
   </td>
  </tr>
 </table>

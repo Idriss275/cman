@@ -54,6 +54,7 @@ $events = [
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Charity Management System</title>
     <!-- Bootstrap CSS -->
+    <link href="images/logo.png" rel="icon" type="image">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
         integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
         crossorigin="anonymous">
@@ -486,7 +487,7 @@ display: inline-block;
                         <a class="nav-link" href="#events">Events</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#donations">Donate</a>
+                        <a class="nav-link" href="donations.php">Donate</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="dashboard.php">Dashboard</a>
@@ -642,7 +643,7 @@ display: inline-block;
                         <div class="contact-info">
 
                             <h2 class="contact-title">Have Any Questions?</h2>
-                            <p>Lorem ipsum is a dummy text used to replace text in some areas just for the purpose of an example. It can be used in publishing and graphic design. The lorem ipsum text is usually a section of a Latin text by Cicero with words altered, added and removed to make it nonsensical.</p>
+                            <p>Have questions or feedback? We'd love to hear from you! Feel free to contact us using the information below, or fill out the form and we'll get back to you soon..</p>
                             <ul class="contact-info">
                                 <li>
                                   <div class="info-left">

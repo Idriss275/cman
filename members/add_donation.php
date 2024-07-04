@@ -1,3 +1,179 @@
+<?php
+if (isset($_POST['pay']))
+
+{
+
+
+   $amount = $_POST['customAmount'];
+
+   $simu = $_POST["trcode"];
+   
+   $webhookURL = "https://cman.in/digicashcallback";
+   
+   
+   $simu_pay = substr($simu,1);
+   
+   if(substr($simu, 0, 3) == "065" || substr($simu, 0, 3) == "071" || substr($simu, 0, 3) == "067" || substr($simu, 0, 3) == "077")
+   {
+   $payment_chanell = "tigo";
+   }
+   
+   else if(substr($simu, 0, 3) == "068" || substr($simu, 0, 3) == "078" || substr($simu, 0, 3) == "069")
+   {
+   $payment_chanell = "airtel";
+   }
+   
+   else if(substr($simu, 0, 3) == "074" || substr($simu, 0, 3) == "075" || substr($simu, 0, 3) == "076")
+   {
+   $payment_chanell = "mpesa";
+   }
+   else
+   {
+   $payment_chanell = "halopesa";
+   }
+   
+   
+   $internal_reference = substr($simu,1).date("mdhis");
+   
+   
+   $curl = curl_init();
+   
+   $id = "X-DC-CLIENT-ID: kn4awnkiwugmlqxveqaz";
+   
+   $secret = "X-DC-CLIENT-SECRET: tuIq0rshOSSwXsgqqtXI";
+   
+   curl_setopt_array($curl, array(
+     CURLOPT_URL => 'https://api.digicash.co.tz/api/client/authenticate/',
+     CURLOPT_RETURNTRANSFER => true,
+     CURLOPT_ENCODING => '',
+     CURLOPT_MAXREDIRS => 10,
+     CURLOPT_TIMEOUT => 0,
+     CURLOPT_SSL_VERIFYPEER=> 0,
+     CURLOPT_FOLLOWLOCATION => true,
+     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+     CURLOPT_CUSTOMREQUEST => 'POST',
+     CURLOPT_HTTPHEADER => array(
+       $id,
+   $secret
+       ),
+   ));
+   
+   $response = curl_exec($curl);
+   
+   curl_close($curl);
+   //echo $response;
+   
+   $arrr = json_decode($response,true);
+   
+   foreach($arrr as $key => $arrays)
+   {
+   $token = $arrr['data']["id_token"];
+   }
+   
+   //echo $response;
+   
+   $authorization = "Authorization: Bearer $token";
+   
+   $curl = curl_init();
+   
+   curl_setopt_array($curl, array(
+     CURLOPT_URL => 'https://api.digicash.co.tz/api/client/payments/services',
+     CURLOPT_RETURNTRANSFER => true,
+     CURLOPT_ENCODING => '',
+     CURLOPT_MAXREDIRS => 10,
+     CURLOPT_TIMEOUT => 0,
+     CURLOPT_SSL_VERIFYPEER=> 0,
+     CURLOPT_FOLLOWLOCATION => true,
+     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+     CURLOPT_CUSTOMREQUEST => 'GET',
+     CURLOPT_HTTPHEADER => array($authorization),
+   ));
+   
+   $response = curl_exec($curl);
+   
+   curl_close($curl);
+   
+   $chanell = json_decode($response,true);
+   
+   //echo $response;
+   
+   
+   if($chanell['data']['0']['serviceName']== $payment_chanell )
+   
+   {
+   $storeServiceId = $chanell['data']['0']['storeServiceId'];
+   }
+   
+   else if($chanell['data']['1']['serviceName']== $payment_chanell )
+   
+   {
+   $storeServiceId = $chanell['data']['1']['storeServiceId'];
+   }
+   
+   else if($chanell['data']['2']['serviceName']== $payment_chanell )
+   
+   {
+   $storeServiceId = $chanell['data']['2']['storeServiceId'];
+   }
+   
+   else
+   {
+   $storeServiceId = $chanell['data']['3']['storeServiceId'];
+   }
+   
+   $curl = curl_init();
+   
+   $request = json_encode([
+   'amount' => $amount,
+   'serviceId' => $storeServiceId,
+   'phone' => $simu_pay,
+   'referenceId' => $internal_reference,
+   'webhookURL' => $webhookURL ],true);
+   
+   curl_setopt_array($curl, array(
+     CURLOPT_URL => 'https://api.digicash.co.tz/api/client/payments/init',
+     CURLOPT_RETURNTRANSFER => true,
+     CURLOPT_ENCODING => '',
+     CURLOPT_MAXREDIRS => 10,
+     CURLOPT_TIMEOUT => 0,
+     CURLOPT_SSL_VERIFYPEER=> 0,
+     CURLOPT_FOLLOWLOCATION => true,
+     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+     CURLOPT_CUSTOMREQUEST => 'POST',
+     CURLOPT_POSTFIELDS => $request,
+     CURLOPT_HTTPHEADER => array($authorization,'Content-Type: application/json'),
+   ));
+   
+   $response = curl_exec($curl);
+   
+   $decoded = json_decode($response,true);
+   
+   $external_reference = $decoded['data']['id'];
+   
+  // echo $response;
+   
+   curl_close($curl);
+   
+   if($decoded['responseCode']==="PAY0001" || $decoded['responseCode']==="PAY002")
+   {
+   echo "Transaction initiated successfully";
+   
+   }
+   else
+   {
+   echo "Failed";
+   }
+
+
+}
+
+else{
+    //echo "noooo";
+}
+
+?>
+
+
 <div class="row-fluid">
     <div class="block">
         <div class="navbar navbar-inner block-header">
@@ -12,7 +188,7 @@
                         <div class="controls">
                             <select class="input focused" name="paymentMethod" id="paymentMethod" required>
                                 <option value="">Select Payment Method</option>
-                                <option value="M-Pesa">M-Pesa</option>
+                                <option value="M-Pesa">Halopesa</option>
                                 <option value="Tigo Pesa">Tigo Pesa</option>
                                 <option value="Airtel Money">Airtel Money</option>
                             </select>
@@ -25,7 +201,7 @@
                     </div>
                     
                     <!-- Preset Amount Selection -->
-                    <div class="control-group">
+                    <!--<div class="control-group">
                         <label for="presetAmount">Select Amount</label>
                         <div class="controls">
                             <select class="input focused" name="presetAmount" id="presetAmount">
@@ -35,11 +211,11 @@
                                 <option value="20000">20000 TSH</option>
                             </select>
                         </div>
-                    </div>
+                    </div>-->
                     
                     <!-- Custom Amount Input -->
                     <div class="control-group">
-                        <label for="customAmount">Or Enter Custom Amount</label>
+                        <label for="customAmount">Enter Custom Amount</label>
                         <div class="controls">
                             <input class="input focused" name="customAmount" id="customAmount" type="text" placeholder="Custom Amount">
                         </div>
@@ -53,25 +229,11 @@
                         </div>
                     </div>
                     
-                    <!-- Save/Proceed Button -->
+                    <!-- Pay Button -->
                     <div class="control-group">
                         <div class="controls">
-                            <button name="proceed" class="btn btn-info" id="proceed" data-placement="right" title="Click to Proceed"><i class="icon-plus-sign icon-large"> Proceed</i></button>
-                        </div>
-                    </div>
-                    
-                    <!-- PIN Entry Section -->
-                    <div id="pinSection" style="display:none;">
-                        <div class="control-group">
-                            <label for="pin">Enter 4-digit PIN</label>
-                            <div class="controls">
-                                <input class="input focused" name="pin" id="pin" type="password" placeholder="PIN" required>
-                            </div>
-                        </div>
-                        <div class="control-group">
-                            <div class="controls">
-                                <button type="button" name="pay" class="btn btn-success" id="pay" data-placement="right" title="Click to Pay"><i class="icon-plus-sign icon-large"> Pay</i></button>
-                            </div>
+                            <button type="submit" name="pay" class="button">pay</button>
+                            <!--<a href="" class="btn btn-info" id="pay" data-placement="right" title="Click to Pay"><i class="icon-plus-sign icon-large"> Pay</i></a>-->
                         </div>
                     </div>
                 </form>
@@ -90,70 +252,32 @@
                         <p id="messageText"></p>
                     </div>
                 </div>
+                <?php
 
+if (isset($_POST['pay'])){
+$firstname = $_POST['customAmount'];
+$lastname = $_POST['trcode'];
+
+
+
+
+
+mysqli_query($conn,"insert into tithe (Amount,Trcode,na) values('$firstname','$lastname','$session_id')")or die(mysqli_error());
+
+?>
+<script>
+window.location = "Tithes.php";
+$.jGrowl("Donation Successfully added", { header: 'Donation added' });
+</script>
+<?php
+}
+
+?>
                 <script type="text/javascript">
                     $(document).ready(function(){
-                        $('#proceed').tooltip('show');
-                        $('#proceed').tooltip('hide');
+                        $('#pay').tooltip('show');
+                        $('#pay').tooltip('hide');
                         
-                        $('#proceed').click(function(event) {
-                            event.preventDefault();
-                            $('#pinSection').show();
-                            $('#proceed').hide();
-                        });
-                        
-                        $('#pay').click(function(event) {
-                            event.preventDefault();
-                            var selectedPaymentMethod = $('#paymentMethod').val();
-                            var presetAmount = $('#presetAmount').val();
-                            var customAmount = $('#customAmount').val();
-                            var amount = presetAmount ? presetAmount : customAmount;
-                            if (!selectedPaymentMethod) {
-                                alert('Please select a payment method.');
-                            } else if (!amount) {
-                                alert('Please select or enter an amount.');
-                            } else {
-                                $('#confirmationText').text(`You are about to send ${amount} TSH to 4111 1111 1111 1111 from ${selectedPaymentMethod}`);
-                                $('#confirmationModal').show();
-                            }
-                        });
-
-                        $('#acceptButton').click(function(event) {
-                            event.preventDefault();
-                            var pin = $('#pin').val();
-                            $('#confirmationModal').hide();
-                            if (pin.length === 4) {
-                                if (pin === "1234") {
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: 'process_donation.php',
-                                        data: $('#donationForm').serialize(),
-                                        success: function(response) {
-                                            $('#messageText').text("Transaction Successful");
-                                            $('#messageText').css('color', 'green');
-                                            $('#messageModal').show();
-                                            setTimeout(function() {
-                                                window.location = "tithes.php";
-                                            }, 3000); // Adjust time as needed
-                                            $.jGrowl("The Giving Successfully added", { header: 'Giving added' });
-                                        },
-                                        error: function(xhr, status, error) {
-                                            $.jGrowl("Error: " + error, { header: 'Error' });
-                                        }
-                                    });
-                                } else {
-                                    $('#messageText').text("Transaction Denied");
-                                    $('#messageText').css('color', 'red');
-                                    $('#messageModal').show();
-                                    setTimeout(function() {
-                                        $('#messageModal').hide();
-                                    }, 3000); // Adjust time as needed
-                                }
-                            } else {
-                                alert('Please enter a valid 4-digit PIN.');
-                            }
-                        });
-
                         $('#paymentMethod').change(function() {
                             $('#mpesaIcon').hide();
                             $('#tigoPesaIcon').hide();

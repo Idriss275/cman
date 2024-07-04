@@ -1,14 +1,18 @@
 <?php
-//Start session
+// Start session
 session_start();
-//Check whether the session variable SESS_mEmBER_ID is present or not
-if (!isset($_SESSION['id']) ||(trim ($_SESSION['id']) == '')) {
-	header("location:".host()."../index.php");
+
+// Check if the session variable is present
+if (!isset($_SESSION['id']) || trim($_SESSION['id']) == '') {
+    header("Location: ../index.php");
     exit();
 }
-$session_id=$_SESSION['id'];
 
-$user_query = mysqli_query($conn,"select * from members where id = '$session_id'")or die(mysqli_error());
+// Securely fetch the session ID
+$session_id = mysqli_real_escape_string($conn, $_SESSION['id']);
+
+// Fetch user information from the database
+$user_query = mysqli_query($conn, "SELECT * FROM members WHERE id = '$session_id'") or die(mysqli_error($conn));
 $user_row = mysqli_fetch_array($user_query);
-$admin_username = $user_row['mobile'];
+$admin_username = htmlspecialchars($user_row['mobile']);
 ?>
